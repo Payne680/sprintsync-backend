@@ -1,0 +1,66 @@
+name: Production Deployment Monitor
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "18"
+
+jobs:
+  monitor-deployment:
+    name: Monitor Render Auto-Deployment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Wait for Render deployment
+        run: |
+          echo "🚀 Render auto-deployment triggered by push to main"
+          echo "⏳ Waiting for deployment to complete..."
+
+          # Wait for Render to start deployment (usually takes 1-2 minutes)
+          sleep 120
+
+      - name: Monitor deployment health
+        run: |
+          echo "🔍 Monitoring deployment health..."
+
+          # Extended health check with retry logic
+          for i in {1..20}; do
+            echo "Health check attempt $i/20..."
+            
+            if curl -f "${{ secrets.PRODUCTION_APP_URL }}/health" --max-time 10; then
+              echo "✅ Production deployment is healthy"
+              
+              # Get deployment info
+              HEALTH_RESPONSE=$(curl -s "${{ secrets.PRODUCTION_APP_URL }}/health" || echo '{}')
+              echo "Health response: $HEALTH_RESPONSE"
+              
+              break
+            else
+              echo "⏳ Deployment still in progress, waiting 30 seconds..."
+              if [ $i -eq 20 ]; then
+                echo "❌ Deployment health check timeout"
+                echo "🔍 Check Render dashboard for deployment status"
+                exit 1
+              fi
+              sleep 30
+            fi
+          done
+
+      - name: Run post-deployment verification
+        run: |
+          echo "🧪 Running post-deployment verification..."
+
+          # Test critical endpoints
+          curl -f "${{ secrets.PRODUCTION_APP_URL }}/health" || exit 1
+          curl -f "${{ secrets.PRODUCTION_APP_URL }}/docs" || exit 1
+
+          # Test API endpoints (non-destructive)
+          curl -X POST "${{ secrets.PRODUCTION_APP_URL }}/auth/signup" \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            -w "%{http_code}" -o /dev/null -s | grep -q "400" || exit 1
+
+          echo "✅ Post-deployment verification passed"

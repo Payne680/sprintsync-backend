@@ -1,0 +1,93 @@
+name: Pre-release Workflow
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  create-prerelease:
+    name: Create Pre-release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.create_version.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get current version
+        id: get_version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "current_version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Increment version
+        id: create_version
+        run: |
+          VERSION="${{ steps.get_version.outputs.current_version }}"
+          # Remove 'v' prefix and increment patch version
+          CLEAN_VERSION=${VERSION#v}
+          IFS='.' read -ra ADDR <<< "$CLEAN_VERSION"
+          MAJOR=${ADDR[0]:-0}
+          MINOR=${ADDR[1]:-0}
+          PATCH=${ADDR[2]:-0}
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH-beta"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New Version: $NEW_VERSION"
+
+      - name: Create Git tag
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git tag -a v${{ steps.create_version.outputs.version }} -m "Pre-release v${{ steps.create_version.outputs.version }}"
+          git push origin v${{ steps.create_version.outputs.version }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/sprintsync-api:v${{ steps.create_version.outputs.version }}
+
+  monitor-staging-deployment:
+    name: Monitor Pre-release Staging Deployment
+    runs-on: ubuntu-latest
+    needs: create-prerelease
+
+    steps:
+      - name: Wait for Render auto-deployment
+        run: |
+          echo "🚀 Pre-release created, waiting for Render auto-deployment..."
+          echo "⏳ Staging deployment should start automatically..."
+          sleep 60
+
+      - name: Monitor staging deployment
+        run: |
+          echo "🔍 Monitoring pre-release staging deployment..."
+
+          for i in {1..10}; do
+            if curl -f "${{ secrets.STAGING_APP_URL }}/health"; then
+              echo "✅ Pre-release staging deployment is healthy"
+              break
+            else
+              echo "⏳ Attempt $i failed, retrying in 15 seconds..."
+              if [ $i -eq 10 ]; then
+                echo "⚠️ Pre-release staging health check timeout"
+                echo "Check Render dashboard for deployment status"
+              fi
+              sleep 15
+            fi
+          done
