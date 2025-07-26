@@ -1,0 +1,20 @@
+Story,Task,Estimate min (hr),Estimate max (hr),Actual,Comment
+Planning,Create initial estimates.csv and project plan,1,1.5,,Drafting task breakdown and timeline
+Backend,Setup Express.js project and JWT authentication,2,3,,
+Backend,Design and implement User and Task models with migrations,2,3,,
+Backend,Implement CRUD endpoints for tasks and users,3,4,,
+Backend,Implement task status transitions (To Do → Done),1,2,,
+Backend,Add Swagger/OpenAPI docs,1,1.5,,
+Backend,Implement /ai/suggest stub endpoint,1,2,,
+Backend,Add structured logging middleware,1,2,,
+Backend,Dockerize backend and database with docker-compose,2,3,,
+Backend,Deploy backend to Render,1,1.5,,
+Backend,Write unit and integration tests for API endpoints,3,4,,
+Frontend,Setup React SPA with V0 and routing,2,3,,
+Frontend,Implement login flow with JWT,2,3,,
+Frontend,Implement task list view with inline status change,3,4,,
+Frontend,Implement modal forms for create/edit task,2,3,,
+Frontend,Integrate /ai/suggest button and display response,1,2,,
+Frontend,Deploy frontend to Vercel,1,1,,
+Frontend,Write unit tests for React components and flows,3,4,,
+Testing & Docs,Write README,Loom video,and final testing,3,4
