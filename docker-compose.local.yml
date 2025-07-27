@@ -1,0 +1,50 @@
+# Local development only - Render handles production deployment
+# Use this for local testing: docker-compose -f docker-compose.local.yml up
+
+version: "3.8"
+
+services:
+  # Local PostgreSQL for development
+  postgres:
+    image: postgres:15-alpine
+    container_name: sprintsync-db-local
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sprintsync_dev
+      POSTGRES_USER: sprintsync_user
+      POSTGRES_PASSWORD: local_dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sprintsync_user -d sprintsync_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Local API for development (no Docker build - use npm run dev)
+  # Uncomment if you want to run API in Docker locally too
+  # api:
+  #   build:
+  #     context: .
+  #   container_name: sprintsync-api-local
+  #   environment:
+  #     NODE_ENV: development
+  #     PORT: 3000
+  #     DATABASE_URL: postgresql://sprintsync_user:local_dev_password@postgres:5432/sprintsync_dev
+  #     JWT_SECRET: local-dev-jwt-secret
+  #     LOG_LEVEL: debug
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./src:/app/src:ro
+  #     - ./logs:/app/logs
+  #   command: npm run dev
+
+volumes:
+  postgres_dev_data:
