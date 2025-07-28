@@ -77,6 +77,9 @@
       "html"
     ]
   },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  },
   "engines": {
     "node": ">=16.0.0",
     "npm": ">=8.0.0"
