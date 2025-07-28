@@ -70,7 +70,7 @@ app.get("/health", async (req, res) => {
 
 //
 // API routes
-// app.use("/auth", authRoutes);
+app.use("/auth", authRoutes);
 // app.use("/tasks", taskRoutes);
 // app.use("/ai", aiRoutes);
 
