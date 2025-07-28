@@ -96,50 +96,57 @@ app.use("*", (req, res) => {
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
-// Start server
-const server = app.listen(config.port, async () => {
-  console.log(`🚀 SprintSync API server running on port ${config.port}`);
-  console.log(
-    `📚 API Documentation available at http://localhost:${config.port}/docs`
-  );
-  console.log(
-    `🏥 Health check available at http://localhost:${config.port}/health`
-  );
-  console.log(`🌍 Environment: ${config.nodeEnv}`);
-
-  // Initialize database and memory monitoring
+// Initialize database function for server startup
+async function startServer() {
   await initializeDatabase();
   memoryMonitor.start();
-});
+}
 
-// Graceful shutdown
-process.on("SIGTERM", async () => {
-  console.log("SIGTERM received, shutting down gracefully");
+// Only start server if this file is run directly (not imported for testing)
+if (require.main === module) {
+  const server = app.listen(config.port, async () => {
+    console.log(`🚀 SprintSync API server running on port ${config.port}`);
+    console.log(
+      `📚 API Documentation available at http://localhost:${config.port}/docs`
+    );
+    console.log(
+      `🏥 Health check available at http://localhost:${config.port}/health`
+    );
+    console.log(`🌍 Environment: ${config.nodeEnv}`);
 
-  // Stop memory monitoring
-  memoryMonitor.stop();
-
-  // Disconnect from database
-  await databaseManager.disconnect();
-
-  // Close server
-  server.close(() => {
-    console.log("Process terminated");
-    process.exit(0);
+    // Initialize database and memory monitoring
+    await startServer();
   });
-});
 
-// Handle SIGINT (Ctrl+C)
-process.on("SIGINT", async () => {
-  console.log("SIGINT received, shutting down gracefully");
+  // Graceful shutdown
+  process.on("SIGTERM", async () => {
+    console.log("SIGTERM received, shutting down gracefully");
 
-  memoryMonitor.stop();
-  await databaseManager.disconnect();
+    // Stop memory monitoring
+    memoryMonitor.stop();
 
-  server.close(() => {
-    console.log("Process terminated");
-    process.exit(0);
+    // Disconnect from database
+    await databaseManager.disconnect();
+
+    // Close server
+    server.close(() => {
+      console.log("Process terminated");
+      process.exit(0);
+    });
   });
-});
+
+  // Handle SIGINT (Ctrl+C)
+  process.on("SIGINT", async () => {
+    console.log("SIGINT received, shutting down gracefully");
+
+    memoryMonitor.stop();
+    await databaseManager.disconnect();
+
+    server.close(() => {
+      console.log("Process terminated");
+      process.exit(0);
+    });
+  });
+}
 
 module.exports = app;
