@@ -10,7 +10,7 @@ info:
 servers:
   - url: http://localhost:3000
     description: Development server
-  - url: https://api.sprintsync.com
+  - url: https://sprintsync-backend.onrender.com
     description: Production server
 
 components:
