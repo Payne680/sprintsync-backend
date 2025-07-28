@@ -15,7 +15,7 @@ const databaseManager = require("./utils/database");
 // Import routes
 const authRoutes = require("./routes/auth");
 const taskRoutes = require("./routes/tasks");
-// const aiRoutes = require("./routes/ai"); // TODO: Implement AI routes
+const aiRoutes = require("./routes/ai");
 
 // Initialize memory monitor
 const memoryMonitor = new MemoryMonitor({
@@ -73,12 +73,12 @@ app.get("/health", async (req, res) => {
 // API routes
 app.use("/auth", authRoutes);
 app.use("/tasks", taskRoutes);
-// app.use("/ai", aiRoutes);
+app.use("/ai", aiRoutes);
 
 // Swagger documentation
 try {
   const swaggerDocument = YAML.load(
-    path.join(__dirname, "..", "docs", "swagger.yaml"),
+    path.join(__dirname, "..", "docs", "swagger.yaml")
   );
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 } catch (error) {
