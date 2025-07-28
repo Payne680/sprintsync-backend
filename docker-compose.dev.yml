@@ -1,0 +1,25 @@
+# Development override for docker-compose
+# Use with: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+version: "3.8"
+
+services:
+  api:
+    build:
+      target: builder # Use builder stage for development
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+    volumes:
+      - ./src:/app/src:ro # Mount source for live reloading
+      - ./prisma:/app/prisma:ro
+    command: npm run dev # Use nodemon for development
+    stdin_open: true
+    tty: true
+
+  postgres:
+    environment:
+      POSTGRES_DB: sprintsync_dev
+    # Keep ports exposed for development access
+    ports:
+      - "5432:5432"

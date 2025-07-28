@@ -1,0 +1,124 @@
+name: CD - Continuous Deployment
+
+on:
+  workflow_run:
+    workflows: ["CI - Continuous Integration"]
+    types:
+      - completed
+    branches: [main, dev]
+
+env:
+  NODE_VERSION: "18"
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: |
+      github.event.workflow_run.conclusion == 'success' && 
+      github.event.workflow_run.head_branch == 'dev'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Trigger Render staging deployment
+        run: |
+          echo "🚀 Staging deployment triggered automatically by Render"
+          echo "📊 CI Status: ${{ github.event.workflow_run.conclusion }}"
+          echo "🌿 Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "📍 Monitor at: https://dashboard.render.com"
+
+      - name: Wait and verify staging
+        run: |
+          echo "⏳ Waiting for deployment to complete..."
+          sleep 60
+
+          # Simple health check (only if STAGING_APP_URL is configured)
+          if [ -n "${{ secrets.STAGING_APP_URL }}" ]; then
+            echo "🔍 Running health check..."
+            for i in {1..5}; do
+              echo "Attempt $i/5: Checking ${{ secrets.STAGING_APP_URL }}/health"
+              if curl -f "${{ secrets.STAGING_APP_URL }}/health" --max-time 10; then
+                echo "✅ Staging deployment successful and healthy"
+                exit 0
+              fi
+              echo "⏳ Retrying in 30 seconds..."
+              sleep 30
+            done
+            echo "❌ Staging deployment verification failed"
+            exit 1
+          else
+            echo "✅ Staging deployment triggered (no health check - STAGING_APP_URL not configured)"
+          fi
+
+      - name: Deployment Summary
+        if: always()
+        run: |
+          echo "## 🚀 Staging Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: Staging" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.event.workflow_run.head_branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.event.workflow_run.head_sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered By**: CI Success" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "- **Status**: ✅ Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status**: ❌ Deployment Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: |
+      github.event.workflow_run.conclusion == 'success' && 
+      github.event.workflow_run.head_branch == 'main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Trigger Render production deployment
+        run: |
+          echo "🚀 Production deployment triggered automatically by Render"
+          echo "📊 CI Status: ${{ github.event.workflow_run.conclusion }}"
+          echo "🌿 Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "📍 Monitor at: https://dashboard.render.com"
+
+      - name: Wait and verify production
+        run: |
+          echo "⏳ Waiting for deployment to complete..."
+          sleep 90
+
+          # Simple health check (only if PRODUCTION_APP_URL is configured)
+          if [ -n "${{ secrets.PRODUCTION_APP_URL }}" ]; then
+            echo "🔍 Running health check..."
+            for i in {1..5}; do
+              echo "Attempt $i/5: Checking ${{ secrets.PRODUCTION_APP_URL }}/health"
+              if curl -f "${{ secrets.PRODUCTION_APP_URL }}/health" --max-time 10; then
+                echo "✅ Production deployment successful and healthy"
+                exit 0
+              fi
+              echo "⏳ Retrying in 30 seconds..."
+              sleep 30
+            done
+            echo "❌ Production deployment verification failed"
+            exit 1
+          else
+            echo "✅ Production deployment triggered (no health check - PRODUCTION_APP_URL not configured)"
+          fi
+
+      - name: Deployment Summary
+        if: always()
+        run: |
+          echo "## 🚀 Production Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: Production" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.event.workflow_run.head_branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.event.workflow_run.head_sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered By**: CI Success" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "- **Status**: ✅ Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status**: ❌ Deployment Failed" >> $GITHUB_STEP_SUMMARY
+          fi
