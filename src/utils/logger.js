@@ -8,7 +8,7 @@ const logsDir = path.join(__dirname, "..", "..", "logs");
 const logFormat = winston.format.combine(
   winston.format.timestamp(),
   winston.format.errors({ stack: true }),
-  winston.format.json()
+  winston.format.json(),
 );
 
 // Create Winston logger instance
@@ -44,9 +44,9 @@ if (process.env.NODE_ENV !== "production") {
           return `${timestamp} [${level}]: ${message} ${
             Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ""
           }`;
-        })
+        }),
       ),
-    })
+    }),
   );
 }
 

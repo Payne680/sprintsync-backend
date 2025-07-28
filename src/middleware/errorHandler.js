@@ -30,7 +30,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Error handling middleware
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, _next) => {
   // Log the error
   errorLogger.error("Application Error", {
     error: err.message,

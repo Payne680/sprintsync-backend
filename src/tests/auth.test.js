@@ -34,7 +34,7 @@ describe("Authentication Endpoints", () => {
 
       expect(response.body).toHaveProperty(
         "message",
-        "User created successfully."
+        "User created successfully.",
       );
       expect(response.body).toHaveProperty("token");
       expect(response.body).toHaveProperty("user");

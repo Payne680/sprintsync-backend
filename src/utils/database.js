@@ -75,13 +75,13 @@ class DatabaseManager {
 
       if (this.connectionAttempts < this.maxRetries) {
         logger.info(
-          `Retrying database connection in ${this.retryDelay / 1000} seconds...`
+          `Retrying database connection in ${this.retryDelay / 1000} seconds...`,
         );
         await new Promise((resolve) => setTimeout(resolve, this.retryDelay));
         return this.connect();
       } else {
         throw new Error(
-          `Failed to connect to database after ${this.maxRetries} attempts`
+          `Failed to connect to database after ${this.maxRetries} attempts`,
         );
       }
     }

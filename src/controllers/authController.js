@@ -107,6 +107,7 @@ const login = async (req, res, next) => {
     const token = generateToken({ userId: user.id });
 
     // Return user info (excluding password)
+    // eslint-disable-next-line no-unused-vars
     const { passwordHash, ...userInfo } = user;
 
     logger.info("User logged in successfully", { userId: user.id, email });
