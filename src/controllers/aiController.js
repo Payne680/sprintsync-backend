@@ -5,8 +5,8 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 // Initialize AI clients
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    })
+    apiKey: process.env.OPENAI_API_KEY,
+  })
   : null;
 
 const gemini = process.env.GOOGLE_API_KEY
@@ -29,7 +29,7 @@ const suggestTaskDescription = async (req, res, _next) => {
     if (!process.env.OPENAI_API_KEY && !process.env.GOOGLE_API_KEY) {
       logger.warn(
         "No AI API keys configured, falling back to mock suggestions",
-        { userId, title }
+        { userId, title },
       );
       const suggestion = generateMockSuggestion(title);
       return res.json({
@@ -201,7 +201,7 @@ const calculateConfidence = (response, title) => {
     "analyze",
   ];
   const foundTerms = taskTerms.filter((term) =>
-    response.toLowerCase().includes(term)
+    response.toLowerCase().includes(term),
   ).length;
   score += (foundTerms / taskTerms.length) * 0.2;
 
