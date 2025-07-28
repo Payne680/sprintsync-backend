@@ -1,10 +1,10 @@
 Story,Task,Estimate min (hr),Estimate max (hr),Actual,Comment
-Planning,Create initial estimates.csv and project plan,1,1.5,,Drafting task breakdown and timeline
-Backend,Setup Express.js project and JWT authentication,2,3,,
-Backend,Design and implement User and Task models with migrations,2,3,,
-Backend,Implement CRUD endpoints for tasks and users,3,4,,
-Backend,Implement task status transitions (To Do → Done),1,2,,
-Backend,Add Swagger/OpenAPI docs,1,1.5,,
+Planning,Create initial estimates.csv and project plan,1,1.5,4,Drafting task breakdown and timeline
+Backend,Setup Express.js project and JWT authentication,2,3,3.5, Setting up the backend with Github Actions and Docker
+Backend,Design and implement User and Task models with migrations,2,3,2,
+Backend,Implement CRUD endpoints for tasks and users,3,4,3,
+Backend,Implement task status transitions (To Do → Done),1,2,1,
+Backend,Add Swagger/OpenAPI docs,1,1.5,1,
 Backend,Implement /ai/suggest stub endpoint,1,2,,
 Backend,Add structured logging middleware,1,2,,
 Backend,Dockerize backend and database with docker-compose,2,3,,

@@ -78,7 +78,7 @@ app.use("/tasks", taskRoutes);
 // Swagger documentation
 try {
   const swaggerDocument = YAML.load(
-    path.join(__dirname, "..", "docs", "swagger.yaml")
+    path.join(__dirname, "..", "docs", "swagger.yaml"),
   );
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 } catch (error) {
