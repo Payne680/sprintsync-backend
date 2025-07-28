@@ -5,11 +5,11 @@ Backend,Design and implement User and Task models with migrations,2,3,2,
 Backend,Implement CRUD endpoints for tasks and users,3,4,3,
 Backend,Implement task status transitions (To Do → Done),1,2,1,
 Backend,Add Swagger/OpenAPI docs,1,1.5,1,
-Backend,Implement /ai/suggest stub endpoint,1,2,,
-Backend,Add structured logging middleware,1,2,,
-Backend,Dockerize backend and database with docker-compose,2,3,,
-Backend,Deploy backend to Render,1,1.5,,
-Backend,Write unit and integration tests for API endpoints,3,4,,
+Backend,Implement /ai/suggest stub endpoint,1,2,3.5,Implemented full multi-provider AI system with Gemini and OpenAI integration plus fallback
+Backend,Add structured logging middleware,1,2,1.5,Added Winston logging with HTTP request middleware and structured error handling
+Backend,Dockerize backend and database with docker-compose,2,3,2.5,Created Dockerfile and docker-compose with PostgreSQL database setup
+Backend,Deploy backend to Render,1,1.5,0.5,Prepared render.yaml configuration and deployment scripts
+Backend,Write unit and integration tests for API endpoints,3,4,4.5,Comprehensive test suite with 27 tests covering auth and task endpoints
 Frontend,Setup React SPA with V0 and routing,2,3,,
 Frontend,Implement login flow with JWT,2,3,,
 Frontend,Implement task list view with inline status change,3,4,,
