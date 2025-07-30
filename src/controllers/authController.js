@@ -121,8 +121,17 @@ const login = async (req, res, next) => {
     next(error);
   }
 };
+// Return authenticated user's info
+const me = async (req, res) => {
+  // req.user is set by authMiddleware
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  res.json({ user: req.user });
+};
 
 module.exports = {
   signup,
   login,
+  me,
 };

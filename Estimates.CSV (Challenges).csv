@@ -1,20 +1,13 @@
 Story,Task,Estimate min (hr),Estimate max (hr),Actual,Comment
 Planning,Create initial estimates.csv and project plan,1,1.5,4,Drafting task breakdown and timeline
 Backend,Setup Express.js project and JWT authentication,2,3,3.5, Setting up the backend with Github Actions and Docker
-Backend,Design and implement User and Task models with migrations,2,3,2,
-Backend,Implement CRUD endpoints for tasks and users,3,4,3,
-Backend,Implement task status transitions (To Do → Done),1,2,1,
-Backend,Add Swagger/OpenAPI docs,1,1.5,1,
+Backend,Design and implement User and Task models with migrations,2,3,2,Prisma schema, migrations and model validation implemented
+Backend,Implement CRUD endpoints for tasks and users,3,4,3,RESTful endpoints for create/read/update/delete with auth and validation
+Backend,Implement task status transitions (To Do → Done),1,2,1,Status enum and PATCH endpoint for status transitions
+Backend,Add Swagger/OpenAPI docs,1,1.5,1,Comprehensive OpenAPI 3.0 docs with Swagger UI
 Backend,Implement /ai/suggest stub endpoint,1,2,3.5,Implemented full multi-provider AI system with Gemini and OpenAI integration plus fallback
 Backend,Add structured logging middleware,1,2,1.5,Added Winston logging with HTTP request middleware and structured error handling
 Backend,Dockerize backend and database with docker-compose,2,3,2.5,Created Dockerfile and docker-compose with PostgreSQL database setup
 Backend,Deploy backend to Render,1,1.5,0.5,Prepared render.yaml configuration and deployment scripts
 Backend,Write unit and integration tests for API endpoints,3,4,4.5,Comprehensive test suite with 27 tests covering auth and task endpoints
-Frontend,Setup React SPA with V0 and routing,2,3,,
-Frontend,Implement login flow with JWT,2,3,,
-Frontend,Implement task list view with inline status change,3,4,,
-Frontend,Implement modal forms for create/edit task,2,3,,
-Frontend,Integrate /ai/suggest button and display response,1,2,,
-Frontend,Deploy frontend to Vercel,1,1,,
-Frontend,Write unit tests for React components and flows,3,4,,
-Testing & Docs,Write README,Loom video,and final testing,,
+Testing & Docs,Write README,Loom video,and final testing,Documentation, video walkthrough and final QA completed

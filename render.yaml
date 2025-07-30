@@ -32,15 +32,6 @@ services:
         fromDatabase:
           name: sprintsync-db
           property: connectionString
-
-databases:
-  # PostgreSQL Database
-  - name: sprintsync-db
-    databaseName: sprintsync
-    user: sprintsync_user
-    plan: free # Change to 'starter' or higher for production
-    region: oregon # Choose region close to your users
-    postgresMajorVersion: 15
 # Optional: Redis for caching (comment out if not needed initially)
 # - type: redis
 #   name: sprintsync-redis

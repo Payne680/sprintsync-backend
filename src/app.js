@@ -71,14 +71,14 @@ app.get("/health", async (req, res) => {
 
 //
 // API routes
-app.use("/auth", authRoutes);
-app.use("/tasks", taskRoutes);
-app.use("/ai", aiRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Swagger documentation
 try {
   const swaggerDocument = YAML.load(
-    path.join(__dirname, "..", "docs", "swagger.yaml"),
+    path.join(__dirname, "..", "docs", "swagger.yaml")
   );
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 } catch (error) {
