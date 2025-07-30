@@ -52,17 +52,17 @@ describe("Task Endpoints", () => {
 
       expect(response.body).toHaveProperty(
         "message",
-        "Task created successfully."
+        "Task created successfully.",
       );
       expect(response.body).toHaveProperty("task");
       expect(response.body.task).toHaveProperty("title", taskData.title);
       expect(response.body.task).toHaveProperty(
         "description",
-        taskData.description
+        taskData.description,
       );
       expect(response.body.task).toHaveProperty(
         "totalMinutes",
-        taskData.totalMinutes
+        taskData.totalMinutes,
       );
       expect(response.body.task).toHaveProperty("userId", testUserId);
       expect(response.body.task).toHaveProperty("status", "TODO");
@@ -240,16 +240,16 @@ describe("Task Endpoints", () => {
 
       expect(response.body).toHaveProperty(
         "message",
-        "Task updated successfully."
+        "Task updated successfully.",
       );
       expect(response.body.task).toHaveProperty("title", updateData.title);
       expect(response.body.task).toHaveProperty(
         "description",
-        updateData.description
+        updateData.description,
       );
       expect(response.body.task).toHaveProperty(
         "totalMinutes",
-        updateData.totalMinutes
+        updateData.totalMinutes,
       );
     });
 
@@ -267,7 +267,7 @@ describe("Task Endpoints", () => {
       expect(response.body.task).toHaveProperty("title", updateData.title);
       expect(response.body.task).toHaveProperty(
         "description",
-        "Original description"
+        "Original description",
       );
     });
 
@@ -303,7 +303,7 @@ describe("Task Endpoints", () => {
 
       expect(response.body).toHaveProperty(
         "message",
-        "Task status updated successfully."
+        "Task status updated successfully.",
       );
       expect(response.body.task).toHaveProperty("status", "IN_PROGRESS");
     });
@@ -317,7 +317,7 @@ describe("Task Endpoints", () => {
 
       expect(response.body).toHaveProperty(
         "error",
-        "Valid status is required. Options: TODO, IN_PROGRESS, DONE"
+        "Valid status is required. Options: TODO, IN_PROGRESS, DONE",
       );
     });
 
@@ -352,7 +352,7 @@ describe("Task Endpoints", () => {
 
       expect(response.body).toHaveProperty(
         "message",
-        "Task deleted successfully."
+        "Task deleted successfully.",
       );
 
       // Verify task is deleted
