@@ -1,5 +1,6 @@
 const express = require("express");
-const { signup, login } = require("../controllers/authController");
+const { signup, login, me } = require("../controllers/authController");
+const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -66,3 +67,27 @@ router.post("/signup", signup);
 router.post("/login", login);
 
 module.exports = router;
+
+// Authenticated user info
+/**
+ * @swagger
+ * /auth/me:
+ *   get:
+ *     summary: Get current authenticated user
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Authenticated user info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized
+ */
+router.get("/me", authMiddleware, me);

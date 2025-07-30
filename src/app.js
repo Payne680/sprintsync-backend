@@ -71,9 +71,9 @@ app.get("/health", async (req, res) => {
 
 //
 // API routes
-app.use("/auth", authRoutes);
-app.use("/tasks", taskRoutes);
-app.use("/ai", aiRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Swagger documentation
 try {

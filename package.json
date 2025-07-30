@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "test": "jest --detectOpenHandles --forceExit",
-    "test:watch": "jest --watch --detectOpenHandles",
-    "test:coverage": "jest --coverage --detectOpenHandles --forceExit",
+    "test": "NODE_ENV=test DATABASE_URL=\"postgresql://test_user:test_password@localhost:5432/sprintsync_test\" jest --detectOpenHandles --forceExit",
+    "test:watch": "NODE_ENV=test DATABASE_URL=\"postgresql://test_user:test_password@localhost:5432/sprintsync_test\" jest --watch --detectOpenHandles",
+    "test:coverage": "NODE_ENV=test DATABASE_URL=\"postgresql://test_user:test_password@localhost:5432/sprintsync_test\" jest --coverage --detectOpenHandles --forceExit",
     "db:migrate": "npx prisma migrate dev",
     "db:generate": "npx prisma generate",
     "db:studio": "npx prisma studio",
