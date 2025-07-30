@@ -1,4 +1,5 @@
 # SprintSync Backend API
+## [Video Link](https://www.loom.com/share/2ca1ad0a08ae460d8363a924f0ab7d17?sid=540ac882-ad33-4c8a-9bcc-23b67eb3f9f6)
 
 A comprehensive task management API built with Express.js, Prisma ORM, and PostgreSQL, featuring JWT authentication and AI-powered task suggestions.
 
