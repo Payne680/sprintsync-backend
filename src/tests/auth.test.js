@@ -19,7 +19,7 @@ describe("Authentication Endpoints", () => {
     await databaseManager.disconnect();
   });
 
-  describe("POST /auth/signup", () => {
+  describe("POST /api/auth/signup", () => {
     it("should create a new user successfully", async () => {
       const userData = {
         name: "Test User",
@@ -28,13 +28,13 @@ describe("Authentication Endpoints", () => {
       };
 
       const response = await request(app)
-        .post("/auth/signup")
+        .post("/api/auth/signup")
         .send(userData)
         .expect(201);
 
       expect(response.body).toHaveProperty(
         "message",
-        "User created successfully.",
+        "User created successfully."
       );
       expect(response.body).toHaveProperty("token");
       expect(response.body).toHaveProperty("user");
@@ -45,7 +45,7 @@ describe("Authentication Endpoints", () => {
 
     it("should return error for missing required fields", async () => {
       const response = await request(app)
-        .post("/auth/signup")
+        .post("/api/auth/signup")
         .send({
           name: "Test User",
           // Missing email and password
@@ -63,11 +63,11 @@ describe("Authentication Endpoints", () => {
       };
 
       // Create first user
-      await request(app).post("/auth/signup").send(userData).expect(201);
+      await request(app).post("/api/auth/signup").send(userData).expect(201);
 
       // Try to create user with same email
       const response = await request(app)
-        .post("/auth/signup")
+        .post("/api/auth/signup")
         .send(userData)
         .expect(400);
 
@@ -82,7 +82,7 @@ describe("Authentication Endpoints", () => {
       };
 
       const response = await request(app)
-        .post("/auth/signup")
+        .post("/api/auth/signup")
         .send(userData)
         .expect(400);
 
@@ -90,10 +90,10 @@ describe("Authentication Endpoints", () => {
     });
   });
 
-  describe("POST /auth/login", () => {
+  describe("POST /api/auth/login", () => {
     beforeEach(async () => {
       // Create a test user
-      await request(app).post("/auth/signup").send({
+      await request(app).post("/api/auth/signup").send({
         name: "Test User",
         email: "test@example.com",
         password: "password123",
@@ -102,7 +102,7 @@ describe("Authentication Endpoints", () => {
 
     it("should login successfully with valid credentials", async () => {
       const response = await request(app)
-        .post("/auth/login")
+        .post("/api/auth/login")
         .send({
           email: "test@example.com",
           password: "password123",
@@ -117,7 +117,7 @@ describe("Authentication Endpoints", () => {
 
     it("should return error for invalid email", async () => {
       const response = await request(app)
-        .post("/auth/login")
+        .post("/api/auth/login")
         .send({
           email: "wrong@example.com",
           password: "password123",
@@ -129,7 +129,7 @@ describe("Authentication Endpoints", () => {
 
     it("should return error for invalid password", async () => {
       const response = await request(app)
-        .post("/auth/login")
+        .post("/api/auth/login")
         .send({
           email: "test@example.com",
           password: "wrongpassword",
@@ -141,7 +141,7 @@ describe("Authentication Endpoints", () => {
 
     it("should return error for missing credentials", async () => {
       const response = await request(app)
-        .post("/auth/login")
+        .post("/api/auth/login")
         .send({
           email: "test@example.com",
           // Missing password

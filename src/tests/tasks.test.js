@@ -24,7 +24,9 @@ describe("Task Endpoints", () => {
       password: "password123",
     };
 
-    const authResponse = await request(app).post("/auth/signup").send(userData);
+    const authResponse = await request(app)
+      .post("/api/auth/signup")
+      .send(userData);
 
     authToken = authResponse.body.token;
     testUserId = authResponse.body.user.id;
@@ -34,7 +36,7 @@ describe("Task Endpoints", () => {
     await databaseManager.disconnect();
   });
 
-  describe("POST /tasks", () => {
+  describe("POST /api/tasks", () => {
     it("should create a new task successfully", async () => {
       const taskData = {
         title: "Test Task",
@@ -43,24 +45,24 @@ describe("Task Endpoints", () => {
       };
 
       const response = await request(app)
-        .post("/tasks")
+        .post("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`)
         .send(taskData)
         .expect(201);
 
       expect(response.body).toHaveProperty(
         "message",
-        "Task created successfully.",
+        "Task created successfully."
       );
       expect(response.body).toHaveProperty("task");
       expect(response.body.task).toHaveProperty("title", taskData.title);
       expect(response.body.task).toHaveProperty(
         "description",
-        taskData.description,
+        taskData.description
       );
       expect(response.body.task).toHaveProperty(
         "totalMinutes",
-        taskData.totalMinutes,
+        taskData.totalMinutes
       );
       expect(response.body.task).toHaveProperty("userId", testUserId);
       expect(response.body.task).toHaveProperty("status", "TODO");
@@ -73,7 +75,7 @@ describe("Task Endpoints", () => {
       };
 
       const response = await request(app)
-        .post("/tasks")
+        .post("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`)
         .send(taskData)
         .expect(201);
@@ -87,7 +89,7 @@ describe("Task Endpoints", () => {
       };
 
       const response = await request(app)
-        .post("/tasks")
+        .post("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`)
         .send(taskData)
         .expect(400);
@@ -101,7 +103,7 @@ describe("Task Endpoints", () => {
       };
 
       const response = await request(app)
-        .post("/tasks")
+        .post("/api/tasks")
         .send(taskData)
         .expect(401);
 
@@ -113,19 +115,19 @@ describe("Task Endpoints", () => {
     beforeEach(async () => {
       // Create test tasks
       await request(app)
-        .post("/tasks")
+        .post("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`)
         .send({ title: "Task 1", description: "First task" });
 
       await request(app)
-        .post("/tasks")
+        .post("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`)
         .send({ title: "Task 2", description: "Second task" });
     });
 
     it("should get all tasks for authenticated user", async () => {
       const response = await request(app)
-        .get("/tasks")
+        .get("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`)
         .expect(200);
 
@@ -139,19 +141,19 @@ describe("Task Endpoints", () => {
     it("should filter tasks by status", async () => {
       // Update one task to IN_PROGRESS
       const tasksResponse = await request(app)
-        .get("/tasks")
+        .get("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`);
 
       const taskId = tasksResponse.body.tasks[0].id;
 
       await request(app)
-        .patch(`/tasks/${taskId}/status`)
+        .patch(`/api/tasks/${taskId}/status`)
         .set("Authorization", `Bearer ${authToken}`)
         .send({ status: "IN_PROGRESS" });
 
       // Filter by TODO status
       const response = await request(app)
-        .get("/tasks?status=TODO")
+        .get("/api/tasks?status=TODO")
         .set("Authorization", `Bearer ${authToken}`)
         .expect(200);
 
@@ -160,18 +162,18 @@ describe("Task Endpoints", () => {
     });
 
     it("should return error for unauthenticated request", async () => {
-      const response = await request(app).get("/tasks").expect(401);
+      const response = await request(app).get("/api/tasks").expect(401);
 
       expect(response.body).toHaveProperty("error");
     });
   });
 
-  describe("GET /tasks/:id", () => {
+  describe("GET /api/tasks/:id", () => {
     let taskId;
 
     beforeEach(async () => {
       const taskResponse = await request(app)
-        .post("/tasks")
+        .post("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`)
         .send({ title: "Test Task", description: "Test description" });
 
@@ -180,7 +182,7 @@ describe("Task Endpoints", () => {
 
     it("should get a specific task", async () => {
       const response = await request(app)
-        .get(`/tasks/${taskId}`)
+        .get(`/api/tasks/${taskId}`)
         .set("Authorization", `Bearer ${authToken}`)
         .expect(200);
 
@@ -191,7 +193,7 @@ describe("Task Endpoints", () => {
 
     it("should return 404 for non-existent task", async () => {
       const response = await request(app)
-        .get("/tasks/999999")
+        .get("/api/tasks/999999")
         .set("Authorization", `Bearer ${authToken}`)
         .expect(404);
 
@@ -199,18 +201,20 @@ describe("Task Endpoints", () => {
     });
 
     it("should return error for unauthenticated request", async () => {
-      const response = await request(app).get(`/tasks/${taskId}`).expect(401);
+      const response = await request(app)
+        .get(`/api/tasks/${taskId}`)
+        .expect(401);
 
       expect(response.body).toHaveProperty("error");
     });
   });
 
-  describe("PUT /tasks/:id", () => {
+  describe("PUT /api/tasks/:id", () => {
     let taskId;
 
     beforeEach(async () => {
       const taskResponse = await request(app)
-        .post("/tasks")
+        .post("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`)
         .send({
           title: "Original Task",
@@ -229,23 +233,23 @@ describe("Task Endpoints", () => {
       };
 
       const response = await request(app)
-        .put(`/tasks/${taskId}`)
+        .put(`/api/tasks/${taskId}`)
         .set("Authorization", `Bearer ${authToken}`)
         .send(updateData)
         .expect(200);
 
       expect(response.body).toHaveProperty(
         "message",
-        "Task updated successfully.",
+        "Task updated successfully."
       );
       expect(response.body.task).toHaveProperty("title", updateData.title);
       expect(response.body.task).toHaveProperty(
         "description",
-        updateData.description,
+        updateData.description
       );
       expect(response.body.task).toHaveProperty(
         "totalMinutes",
-        updateData.totalMinutes,
+        updateData.totalMinutes
       );
     });
 
@@ -255,7 +259,7 @@ describe("Task Endpoints", () => {
       };
 
       const response = await request(app)
-        .put(`/tasks/${taskId}`)
+        .put(`/api/tasks/${taskId}`)
         .set("Authorization", `Bearer ${authToken}`)
         .send(updateData)
         .expect(200);
@@ -263,13 +267,13 @@ describe("Task Endpoints", () => {
       expect(response.body.task).toHaveProperty("title", updateData.title);
       expect(response.body.task).toHaveProperty(
         "description",
-        "Original description",
+        "Original description"
       );
     });
 
     it("should return 404 for non-existent task", async () => {
       const response = await request(app)
-        .put("/tasks/999999")
+        .put("/api/tasks/999999")
         .set("Authorization", `Bearer ${authToken}`)
         .send({ title: "Updated" })
         .expect(404);
@@ -278,12 +282,12 @@ describe("Task Endpoints", () => {
     });
   });
 
-  describe("PATCH /tasks/:id/status", () => {
+  describe("PATCH /api/tasks/:id/status", () => {
     let taskId;
 
     beforeEach(async () => {
       const taskResponse = await request(app)
-        .post("/tasks")
+        .post("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`)
         .send({ title: "Test Task", description: "Test description" });
 
@@ -292,34 +296,34 @@ describe("Task Endpoints", () => {
 
     it("should update task status successfully", async () => {
       const response = await request(app)
-        .patch(`/tasks/${taskId}/status`)
+        .patch(`/api/tasks/${taskId}/status`)
         .set("Authorization", `Bearer ${authToken}`)
         .send({ status: "IN_PROGRESS" })
         .expect(200);
 
       expect(response.body).toHaveProperty(
         "message",
-        "Task status updated successfully.",
+        "Task status updated successfully."
       );
       expect(response.body.task).toHaveProperty("status", "IN_PROGRESS");
     });
 
     it("should return error for invalid status", async () => {
       const response = await request(app)
-        .patch(`/tasks/${taskId}/status`)
+        .patch(`/api/tasks/${taskId}/status`)
         .set("Authorization", `Bearer ${authToken}`)
         .send({ status: "INVALID_STATUS" })
         .expect(400);
 
       expect(response.body).toHaveProperty(
         "error",
-        "Valid status is required. Options: TODO, IN_PROGRESS, DONE",
+        "Valid status is required. Options: TODO, IN_PROGRESS, DONE"
       );
     });
 
     it("should return error for missing status", async () => {
       const response = await request(app)
-        .patch(`/tasks/${taskId}/status`)
+        .patch(`/api/tasks/${taskId}/status`)
         .set("Authorization", `Bearer ${authToken}`)
         .send({})
         .expect(400);
@@ -328,12 +332,12 @@ describe("Task Endpoints", () => {
     });
   });
 
-  describe("DELETE /tasks/:id", () => {
+  describe("DELETE /api/tasks/:id", () => {
     let taskId;
 
     beforeEach(async () => {
       const taskResponse = await request(app)
-        .post("/tasks")
+        .post("/api/tasks")
         .set("Authorization", `Bearer ${authToken}`)
         .send({ title: "Test Task", description: "Test description" });
 
@@ -342,25 +346,25 @@ describe("Task Endpoints", () => {
 
     it("should delete a task successfully", async () => {
       const response = await request(app)
-        .delete(`/tasks/${taskId}`)
+        .delete(`/api/tasks/${taskId}`)
         .set("Authorization", `Bearer ${authToken}`)
         .expect(200);
 
       expect(response.body).toHaveProperty(
         "message",
-        "Task deleted successfully.",
+        "Task deleted successfully."
       );
 
       // Verify task is deleted
       await request(app)
-        .get(`/tasks/${taskId}`)
+        .get(`/api/tasks/${taskId}`)
         .set("Authorization", `Bearer ${authToken}`)
         .expect(404);
     });
 
     it("should return 404 for non-existent task", async () => {
       const response = await request(app)
-        .delete("/tasks/999999")
+        .delete("/api/tasks/999999")
         .set("Authorization", `Bearer ${authToken}`)
         .expect(404);
 
@@ -369,7 +373,7 @@ describe("Task Endpoints", () => {
 
     it("should return error for unauthenticated request", async () => {
       const response = await request(app)
-        .delete(`/tasks/${taskId}`)
+        .delete(`/api/tasks/${taskId}`)
         .expect(401);
 
       expect(response.body).toHaveProperty("error");
