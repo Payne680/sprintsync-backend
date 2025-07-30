@@ -1,7 +1,7 @@
 Story,Task,Estimate min (hr),Estimate max (hr),Actual,Comment
 Planning,Create initial estimates.csv and project plan,1,1.5,4,Drafting task breakdown and timeline
 Backend,Setup Express.js project and JWT authentication,2,3,3.5, Setting up the backend with Github Actions and Docker
-Backend,Design and implement User and Task models with migrations,2,3,2,Prisma schema, migrations and model validation implemented
+Backend,Design and implement User and Task models with migrations,2,3,2,Prisma schema migrations and model validation implemented
 Backend,Implement CRUD endpoints for tasks and users,3,4,3,RESTful endpoints for create/read/update/delete with auth and validation
 Backend,Implement task status transitions (To Do → Done),1,2,1,Status enum and PATCH endpoint for status transitions
 Backend,Add Swagger/OpenAPI docs,1,1.5,1,Comprehensive OpenAPI 3.0 docs with Swagger UI
